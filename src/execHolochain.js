@@ -28,7 +28,7 @@ function execHolochain() {
     stdio: "inherit",
     env: {
       ...process.env,
-      RUST_LOG: "info",
+      RUST_LOG: process.env.RUST_LOG ? process.env.RUST_LOG : "info",
     },
   });
 }
