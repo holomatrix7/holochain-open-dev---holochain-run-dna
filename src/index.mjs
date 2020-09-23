@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-":"; //# comment; exec /usr/bin/env node --no-warnings --experimental-modules --input-type=module - "$@" < "$0"
+#!/usr/bin/env node
 
 import { getDnasToInstall } from "./utils";
 import { execHolochain } from "./execHolochain";
