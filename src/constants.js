@@ -1,3 +1,1 @@
-const ADMIN_PORT = 1234;
-
-module.exports = { ADMIN_PORT };
+export const ADMIN_PORT = 1234;

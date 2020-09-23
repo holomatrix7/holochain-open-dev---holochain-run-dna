@@ -1,9 +1,9 @@
-#!/usr/bin/env node
-const { AdminWebsocket } = require("@holochain/conductor-api");
+#!/usr/bin/env bash
+":"; //# comment; exec /usr/bin/env node --no-warnings --experimental-modules --input-type=module - "$@" < "$0"
 
-const { getDnasToInstall } = require("./utils");
-const { execHolochain } = require("./execHolochain");
-const { installApp } = require("./installApp");
+import { getDnasToInstall } from "./utils";
+import { execHolochain } from "./execHolochain";
+import { installApp } from "./installApp";
 
 async function execAndInstall(dnasToInstall) {
   // Execute holochain

@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 
 function getDnaPath(provisionalPath) {
   if (fs.existsSync(provisionalPath)) {
@@ -10,7 +10,7 @@ function getDnaPath(provisionalPath) {
   }
 }
 
-function getDnasToInstall() {
+export function getDnasToInstall() {
   const args = process.argv.slice(2);
 
   if (args.length === 0)
@@ -23,5 +23,3 @@ function getDnasToInstall() {
 
   return dnas;
 }
-
-module.exports = { getDnasToInstall };

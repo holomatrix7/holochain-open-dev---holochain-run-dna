@@ -1,7 +1,7 @@
-const tmp = require("tmp");
-const child_process = require("child_process");
-const fs = require("fs");
-const { ADMIN_PORT } = require("./constants");
+import tmp from "tmp";
+import child_process from "child_process";
+import fs from "fs";
+import { ADMIN_PORT } from "./constants";
 
 function createConfigFile() {
   const dbDirectory = tmp.dirSync({});
@@ -21,7 +21,7 @@ function createConfigFile() {
   return configFile.name;
 }
 
-function execHolochain() {
+export function execHolochain() {
   const configFilePath = createConfigFile();
 
   child_process.spawn("holochain", ["-c", configFilePath], {
@@ -32,7 +32,3 @@ function execHolochain() {
     },
   });
 }
-
-module.exports = {
-  execHolochain,
-};
