@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { getDnasToInstall } from "./utils";
-import { execHolochain } from "./execHolochain";
-import { installApp } from "./installApp";
+import { getDnasToInstall } from "./utils.mjs";
+import { execHolochain } from "./execHolochain.mjs";
+import { installApp } from "./installApp.mjs";
 
 async function execAndInstall(dnasToInstall) {
   // Execute holochain

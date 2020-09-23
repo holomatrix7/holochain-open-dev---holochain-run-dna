@@ -1,7 +1,7 @@
 import tmp from "tmp";
 import child_process from "child_process";
 import fs from "fs";
-import { ADMIN_PORT } from "./constants";
+import { ADMIN_PORT } from "./constants.mjs";
 
 function createConfigFile() {
   const dbDirectory = tmp.dirSync({});
