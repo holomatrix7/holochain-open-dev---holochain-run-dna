@@ -1,5 +1,5 @@
 import { AppWebsocket, AdminWebsocket } from "@holochain/conductor-api";
-import { ADMIN_PORT } from "./constants.mjs";
+import { ADMIN_PORT } from "./constants";
 
 export async function installApp(port, dnas, appId) {
   const adminWebsocket = await AdminWebsocket.connect(
