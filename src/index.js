@@ -4,7 +4,7 @@ import { installApp } from "./installApp";
 
 async function execAndInstall(dnasToInstall) {
   // Execute holochain
-  execHolochain();
+  await execHolochain();
 
   await installApp(8888, dnasToInstall, "test-app");
 }

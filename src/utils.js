@@ -23,3 +23,6 @@ export function getDnasToInstall() {
 
   return dnas;
 }
+
+export const sleep = (ms) =>
+  new Promise((resolve) => setTimeout(() => resolve(), ms));
