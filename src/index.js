@@ -1,4 +1,4 @@
-import { getDnasToInstall } from "./utils";
+import { getDnasToInstall, sleep } from "./utils";
 import { execHolochain } from "./execHolochain";
 import { installApp } from "./installApp";
 
