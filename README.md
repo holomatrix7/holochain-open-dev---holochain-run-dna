@@ -23,9 +23,7 @@ npm install -g @holochain-open-dev/holochain-run-dna
 ATTENTION: also, for now, you need to have the `lair-keystore` binary already installed and accessible in the `PATH` environment variable. To install `lair-keystore`, follow these steps:
 
 ```bash
-git clone git@github.com:holochain/lair.git
-cd lair/crates/lair_keystore
-cargo install --path .
+cargo install --git https://github.com/holochain/lair.git --branch master
 ```
 
 ## Usage
