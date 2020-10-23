@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/holochain-run-dna",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "CLI development tool to quickly run your holochain DNAs",
   "main": "./dist/main.js",
   "scripts": {
