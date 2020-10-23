@@ -6,7 +6,7 @@ async function execAndInstall(dnasToInstall) {
   // Execute holochain
   await execHolochain();
 
-  await sleep(2000);
+  await sleep(100);
 
   await installApp(8888, dnasToInstall, "test-app");
 }
