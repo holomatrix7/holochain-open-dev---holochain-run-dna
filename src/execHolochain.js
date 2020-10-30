@@ -8,21 +8,20 @@ function createConfigFile() {
   const dbDirectory = tmp.dirSync({});
 
   const configFileContents = `
-    ---
-    environment_path: ${dbDirectory.name}
-    use_dangerous_test_keystore: false
-    signing_service_uri: ~
-    encryption_service_uri: ~
-    decryption_service_uri: ~
-    dpki: ~
-    keystore_path: ~
-    passphrase_service: ~
-    admin_interfaces: 
-        - driver:
-            type: websocket
-            port: ${ADMIN_PORT}  
-    network: ~
-    `;
+---
+environment_path: ${dbDirectory.name}
+use_dangerous_test_keystore: false
+signing_service_uri: ~
+encryption_service_uri: ~
+decryption_service_uri: ~
+dpki: ~
+keystore_path: ~
+passphrase_service: ~
+admin_interfaces: 
+    - driver:
+        type: websocket
+        port: ${ADMIN_PORT}  
+network: ~`;
 
   const configFile = tmp.fileSync({});
 
