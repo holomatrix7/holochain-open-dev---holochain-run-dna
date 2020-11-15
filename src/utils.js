@@ -22,6 +22,8 @@ export function getDnasToInstall() {
   if (args.find((arg) => arg.includes(":"))) {
     return args.map((arg) => {
       const portAndDna = arg.split(":");
+      console.log(portAndDna);
+      console.log(parseInt(portAndDna[0]));
       return { port: parseInt(portAndDna[0]), dnaPath: getDnaPath(portAndDna[1]) };
     });
   } else {
