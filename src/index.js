@@ -9,7 +9,7 @@ async function execAndInstall(dnasToInstall) {
   await sleep(100);
 
   for (const dnasPorts of dnasToInstall) {
-    await installApp(dnasPorts.port, [dnasPorts.dnaPath], "test-app");
+    installApp(dnasPorts.port, [dnasPorts.dnaPath], "test-app");
   }
 }
 
