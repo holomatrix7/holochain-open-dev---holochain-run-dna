@@ -19,9 +19,19 @@ export function getDnasToInstall() {
   USAGE: npx @holochain-open-dev/holochain-run-dna [DNA_PATH, DNA_PATH...]
 `);
 
-  const dnas = args.map((arg) => getDnaPath(arg));
+  if (args.find((arg) => arg.includes(":"))) {
+    return args.map((arg) => {
+      const portAndDna = arg.split(":");
+      return { port: portAndDna[0], dnaPath: getDnaPath(portAndDna[1]) };
+    });
+  } else {
+    const dnas = args.map((arg) => ({
+      port: 8888,
+      dnaPath: getDnaPath(arg),
+    }));
 
-  return dnas;
+    return dnas;
+  }
 }
 
 export const sleep = (ms) =>
