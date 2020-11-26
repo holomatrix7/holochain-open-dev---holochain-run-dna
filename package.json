@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/holochain-run-dna",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "CLI development tool to quickly run your holochain DNAs",
   "main": "./dist/main.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "portfinder": "^1.0.28",
     "rollup": "^2.33.3",
     "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-preserve-shebang": "^1.0.1",
     "utf-8-validate": "^5.0.2",
     "ws": "^7.4.0"
   }

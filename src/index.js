@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { sleep } from "./utils.js";
 import { getDnasToInstall } from "./args";
 import { execHolochain } from "./execHolochain.js";

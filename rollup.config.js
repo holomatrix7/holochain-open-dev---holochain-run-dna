@@ -1,11 +1,10 @@
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-
-const pkg = require("./package.json");
+import shebang from "rollup-plugin-preserve-shebang";
 
 export default {
   input: `src/index.js`,
-  output: { file: "dist/main.js", format: "cjs", sourcemap: true },
+  output: { file: "dist/main.js", format: "cjs" },
   external: [
     "child_process",
     "fs",
@@ -34,6 +33,9 @@ export default {
         "node_modules/isomorphic-ws/**/*",
         "node_modules/get-port/**/*",
       ],
+    }),
+    shebang({
+      shebang: "#!/usr/bin/env node",
     }),
   ],
 };
