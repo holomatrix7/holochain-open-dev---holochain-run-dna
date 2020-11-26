@@ -1,28 +1,27 @@
 import { AppWebsocket, AdminWebsocket } from "@holochain/conductor-api";
-import { ADMIN_PORT } from "./constants";
 
-export async function installApp(port, dnas, appId) {
+export async function installApp(adminPort, appPort, dnas, appId) {
   const adminWebsocket = await AdminWebsocket.connect(
-    `ws://localhost:${ADMIN_PORT}`
+    `ws://localhost:${adminPort}`
   );
 
   const pubKey = await adminWebsocket.generateAgentPubKey();
 
   const app = await adminWebsocket.installApp({
     agent_key: pubKey,
-    app_id: appId,
+    installed_app_id: appId,
     dnas: dnas.map((dna) => {
       const path = dna.split("/");
       return { nick: path[path.length - 1], path: dna };
     }),
   });
 
-  await adminWebsocket.activateApp({ app_id: appId });
-  await adminWebsocket.attachAppInterface({ port });
+  await adminWebsocket.activateApp({ installed_app_id: appId });
+  await adminWebsocket.attachAppInterface({ port: appPort });
 
-  const appWebsocket = await AppWebsocket.connect(`ws://localhost:${port}`);
+  const appWebsocket = await AppWebsocket.connect(`ws://localhost:${appPort}`);
 
-  console.log(`Successfully installed app on port ${port}`);
+  console.log(`Successfully installed app on port ${appPort}`);
 
   await appWebsocket.client.close();
   await adminWebsocket.client.close();

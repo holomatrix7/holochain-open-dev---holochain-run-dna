@@ -1,19 +1,24 @@
-import { getDnasToInstall, sleep } from "./utils";
-import { execHolochain } from "./execHolochain";
-import { installApp } from "./installApp";
+import { sleep } from "./utils.js";
+import { getDnasToInstall } from "./args";
+import { execHolochain } from "./execHolochain.js";
+import { installApp } from "./installApp.js";
+import getPort from "get-port";
 
-async function execAndInstall(dnasToInstall) {
+async function execAndInstall({ port, dnas }) {
+  // Find a free port for the admin websocket
+  const adminPort = await getPort({ port: 1234 });
+
   // Execute holochain
-  await execHolochain();
+  await execHolochain(adminPort);
 
   await sleep(100);
 
-  await installApp(8888, dnasToInstall, "test-app");
+  await installApp(adminPort, port, dnas, "test-app");
 }
 
 try {
-  const dnasToInstall = getDnasToInstall();
-  execAndInstall(dnasToInstall).catch(console.error);
+  const { port, dnas } = getDnasToInstall();
+  execAndInstall({ port, dnas }).catch(console.error);
 } catch (e) {
   console.error(e.message);
 }
