@@ -19,14 +19,31 @@ function badInput() {
 `);
 }
 
-export function getDnasToInstall() {
-  const yarg = yargs(hideBin(process.argv)).help().option("port", {
-    alias: "p",
-    type: "integer",
-    description: "Run with verbose logging",
-  }).argv;
-
-  let port = yarg.port || 8888; // Default port
+export function getAppToInstall() {
+  const yarg = yargs(hideBin(process.argv)).help()
+        .option("port", {
+          alias: "p",
+          type: "integer",
+          default: 8888,
+          description: "port",
+        })
+        .option("proxy-url", {
+          alias: "u",
+          type: "string",
+          description: "proxy URL for network configuration"
+        })
+        .option("run-path", {
+          alias: "r",
+          type: "string",
+          description: "path to existing configuration and data use storing data"
+        })
+        .option("installed-app-id", {
+          alias: "i",
+          type: "string",
+          default: "test-app",
+          description: "installed app id"
+        })
+        .argv;
 
   const paths = yarg._;
 
@@ -35,7 +52,10 @@ export function getDnasToInstall() {
   const dnas = paths.map((arg) => getDnaPath(arg));
 
   return {
-    port,
+    installedAppId: yarg.installedAppId,
+    appPort: yarg.port,
     dnas,
+    runPath: yarg.runPath,
+    proxyUrl: yarg.proxyUrl,
   };
 }
