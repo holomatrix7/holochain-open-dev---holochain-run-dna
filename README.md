@@ -5,8 +5,9 @@ A small and temporary cli tool to execute holochain and install the given DNAs. 
 This tool:
 
 - Executes the `holochain` command with default debug level on `info`
-- Uses a temporary database that will be cleaned after exit
-- Installs the given DNAs in the same app, named `test-app`, and listening to 8888.
+- By default uses a temporary database that will be cleaned after exit
+- Installs the given DNAs in the same installed app id `test-app`, and listening to 8888.
+- Is configurable by command-line for other installed-app ids, ports, and network params.
 
 If more configuration parameters are wanted, PRs and issues are welcomed at https://github.com/holochain-open-dev/holochain-run-dna.
 
@@ -37,7 +38,7 @@ Install it globally if you want to be able to use it from the terminal anywhere 
 ## Usage
 
 ```bash
-holochain-run-dna -p [PORT] [DNA_PATH, DNA_PATH...]
+holochain-run-dna -p [PORT] -r [RUN_PATH] -u [PROXY_URL] -i [INSTALLED_APP_ID]  [DNA_PATH, DNA_PATH...]
 ```
 
 Example: `holochain-run-dna -p 8889 ./test.dna.gz`
