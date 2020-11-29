@@ -31,7 +31,7 @@
     "@babel/core": "^7.12.9",
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
-    "babel-loader": "^8.2.1",
+    "babel-loader": "^8.2.2",
     "babel-preset-es2015": "^6.24.1",
     "bufferutil": "^4.0.1",
     "get-port": "^5.1.1",
