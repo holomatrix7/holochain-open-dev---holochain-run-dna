@@ -11,15 +11,15 @@ async function execAndInstall(appToInstall) {
   const adminPort = await getPort({ port: 1234 });
 
   // Execute holochain
-  const configCreated = await execHolochain(adminPort, appToInstall.runPath,  appToInstall.proxyUrl);
+  const [configCreated, realAdminPort] = await execHolochain(adminPort, appToInstall.runPath,  appToInstall.proxyUrl);
 
   // If the config file was created assume we also need to install everything
   if (configCreated) {
     await sleep(100);
-    installApp(adminPort, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
+    installApp(realAdminPort, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
   } else {
     await sleep(500);
-    attachAppInterface(adminPort, appToInstall.appPort, appToInstall.installedAppId);
+    attachAppInterface(realAdminPort, appToInstall.appPort, appToInstall.installedAppId);
   }
 }
 
