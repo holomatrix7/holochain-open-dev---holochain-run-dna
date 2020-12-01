@@ -2,6 +2,7 @@ import tmp from "tmp";
 import child_process from "child_process";
 import fs from "fs";
 import { sleep } from "./utils.js";
+const yaml = require('js-yaml');
 
 function createConfigFile(adminPort, dirName, proxyUrl) {
   if (!dirName) {
@@ -13,7 +14,14 @@ function createConfigFile(adminPort, dirName, proxyUrl) {
   const configFileName = `${dirName}/config.yaml`;
 
   if (fs.existsSync(configFileName)) {
-    return [configFileName, false]
+    try {
+      const doc = yaml.safeLoad(fs.readFileSync(configFileName, 'utf8'));
+      adminPort = doc.admin_interfaces[0].driver.port;
+      console.log(`Using admin port ${adminPort} from config`);
+    } catch (e) {
+      console.log(e);
+    }
+    return [configFileName, false, adminPort]
   }
   const networkConfig = proxyUrl ?
 `network:
@@ -50,11 +58,11 @@ ${networkConfig}
 
   fs.writeFileSync(configFileName, configFileContents);
 
-    return [configFileName, true];
+  return [configFileName, true, adminPort];
 }
 //     "kitsune-proxy://CIW6PxKxsPPlcuvUCbMcKwUpaMSmB7kLD8xyyj4mqcw/kitsune-quic/h/proxy.holochain.org/p/5778/--",
 export async function execHolochain(adminPort, runPath, proxyUrl) {
-  const [configFilePath, configCreated] = createConfigFile(
+  const [configFilePath, configCreated, realAdminPort] = createConfigFile(
     adminPort,
     runPath,
     proxyUrl,
@@ -75,5 +83,5 @@ export async function execHolochain(adminPort, runPath, proxyUrl) {
     },
   });
   await sleep(500);
-  return configCreated;
+  return [configCreated, realAdminPort];
 }
