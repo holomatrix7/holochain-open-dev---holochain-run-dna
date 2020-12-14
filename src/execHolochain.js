@@ -73,8 +73,9 @@ export async function execHolochain(adminPort, runPath, proxyUrl) {
     env: process.env,
   });
 
-  await sleep(100);
-    console.log("config file:", configFilePath)
+  await sleep(500);
+  
+  console.log("Using config file:", configFilePath)
   child_process.spawn("holochain", ["-c", configFilePath], {
     stdio: "inherit",
     env: {
@@ -82,6 +83,6 @@ export async function execHolochain(adminPort, runPath, proxyUrl) {
       RUST_LOG: process.env.RUST_LOG ? process.env.RUST_LOG : "info",
     },
   });
-  await sleep(500);
+  await sleep(1000);
   return [configCreated, realAdminPort];
 }
