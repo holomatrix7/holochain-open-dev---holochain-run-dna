@@ -16,10 +16,10 @@ async function execAndInstall(appToInstall) {
   // If the config file was created assume we also need to install everything
   if (configCreated) {
     await sleep(100);
-    installApp(realAdminPort, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
+    await installApp(realAdminPort, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
   } else {
     await sleep(500);
-    attachAppInterface(realAdminPort, appToInstall.appPort, appToInstall.installedAppId);
+    await attachAppInterface(realAdminPort, appToInstall.appPort, appToInstall.installedAppId);
   }
 }
 
@@ -27,5 +27,5 @@ try {
   const appToInstall = getAppToInstall();
   execAndInstall(appToInstall).catch(console.error);
 } catch (e) {
-  console.error(e.message);
+  console.error(e);
 }
