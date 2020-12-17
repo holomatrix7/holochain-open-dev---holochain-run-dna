@@ -1,37 +1,72 @@
 import tmp from "tmp";
 import child_process from "child_process";
 import fs from "fs";
-import { ADMIN_PORT } from "./constants";
-import { sleep } from "./utils";
+import { sleep } from "./utils.js";
+const yaml = require('js-yaml');
 
-function createConfigFile() {
-  const dbDirectory = tmp.dirSync({});
+function createConfigFile(adminPort, dirName, proxyUrl) {
+  if (!dirName) {
+    const dbDirectory = tmp.dirSync({});
+    dirName = dbDirectory.name;
+  }
 
+  let configExists = false
+  const configFileName = `${dirName}/config.yaml`;
+
+  if (fs.existsSync(configFileName)) {
+    try {
+      const doc = yaml.safeLoad(fs.readFileSync(configFileName, 'utf8'));
+      adminPort = doc.admin_interfaces[0].driver.port;
+      console.log(`Using admin port ${adminPort} from config`);
+    } catch (e) {
+      console.log(e);
+    }
+    return [configFileName, false, adminPort]
+  }
+  const networkConfig = proxyUrl ?
+`network:
+    bootstrap_service: https://bootstrap.holo.host
+    transport_pool:
+      - type: proxy
+        sub_transport:
+          type: quic
+        proxy_config:
+          type: remote_proxy_client
+          proxy_url: "${proxyUrl}"
+` :
+`network:
+    bootstrap_service: https://bootstrap.holo.host
+    transport_pool:
+       - type: quic
+`;
   const configFileContents = `
 ---
-environment_path: ${dbDirectory.name}
+environment_path: ${dirName}
 use_dangerous_test_keystore: false
 signing_service_uri: ~
 encryption_service_uri: ~
 decryption_service_uri: ~
 dpki: ~
-keystore_path: ~
+keystore_path: "${dirName}/keystore"
 passphrase_service: ~
-admin_interfaces: 
+admin_interfaces:
     - driver:
         type: websocket
-        port: ${ADMIN_PORT}  
-network: ~`;
+        port: ${adminPort}
+${networkConfig}
+`;
 
-  const configFile = tmp.fileSync({});
+  fs.writeFileSync(configFileName, configFileContents);
 
-  fs.writeFileSync(configFile.name, configFileContents);
-
-  return configFile.name;
+  return [configFileName, true, adminPort];
 }
-
-export async function execHolochain() {
-  const configFilePath = createConfigFile();
+//     "kitsune-proxy://CIW6PxKxsPPlcuvUCbMcKwUpaMSmB7kLD8xyyj4mqcw/kitsune-quic/h/proxy.holochain.org/p/5778/--",
+export async function execHolochain(adminPort, runPath, proxyUrl) {
+  const [configFilePath, configCreated, realAdminPort] = createConfigFile(
+    adminPort,
+    runPath,
+    proxyUrl,
+  );
 
   child_process.spawn("lair-keystore", [], {
     stdio: "inherit",
@@ -39,7 +74,7 @@ export async function execHolochain() {
   });
 
   await sleep(100);
-
+    console.log("config file:", configFilePath)
   child_process.spawn("holochain", ["-c", configFilePath], {
     stdio: "inherit",
     env: {
@@ -47,4 +82,6 @@ export async function execHolochain() {
       RUST_LOG: process.env.RUST_LOG ? process.env.RUST_LOG : "info",
     },
   });
+  await sleep(500);
+  return [configCreated, realAdminPort];
 }
