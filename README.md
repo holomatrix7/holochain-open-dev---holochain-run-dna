@@ -50,7 +50,7 @@ Use the `-c` flag To install multiple happs and pass a path to a config.
 
 Example: `holochain-run-dna -c ./example-config.yml`
 
-To know how the config looks like please look at the [enample-config](./example-config.yml)
+To know how the config looks like please look at the [example-config](./example-config.yml)
 > Note: Currently different happs will be installed with different agent by default.
 
 

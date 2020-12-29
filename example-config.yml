@@ -6,4 +6,4 @@
 - dnas:
   - hha.dna.gz
   app_name: core-id
-  app_port: 9000
+  app_port: 8000
