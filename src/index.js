@@ -20,9 +20,9 @@ async function execAndInstall(appToInstall) {
     await sleep(100);
     if (appToInstall.happs) {
       const happs = yaml.safeLoad(fs.readFileSync(appToInstall.happs, 'utf8'));
-      happs.map(async happ => {
+      for(let happ of happs){
         await installApp(realAdminPort, happ.app_port,  happ.dnas, happ.app_name);
-      });
+      }
     } else {
       await installApp(realAdminPort, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
     }
