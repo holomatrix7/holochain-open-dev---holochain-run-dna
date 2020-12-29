@@ -76,6 +76,10 @@ export async function execHolochain(adminPort, runPath, proxyUrl) {
     stdio: "inherit",
     env: { ...process.env, LAIR_DIR: `${dirName}/keystore` },
   });
+  process.on("SIGINT", function () {
+    fs.rm(`${dirName}/keystore/pid`)
+    process.exit();
+  });
 
   await sleep(500);
 
