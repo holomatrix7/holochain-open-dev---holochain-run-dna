@@ -1,0 +1,9 @@
+- dnas:
+  - ./chat.dna.gz
+  - ./hha.dna.gz
+  app_name: hc-id
+  app_port: 9000
+- dnas:
+  - hha.dna.gz
+  app_name: core-id
+  app_port: 9000
