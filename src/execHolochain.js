@@ -2,29 +2,32 @@ import tmp from "tmp";
 import child_process from "child_process";
 import fs from "fs";
 import { sleep } from "./utils.js";
-const yaml = require('js-yaml');
+const yaml = require("js-yaml");
 
-function createConfigFile(adminPort, dirName, proxyUrl) {
+function createTmpDirIfNecessary(dirName) {
   if (!dirName) {
     const dbDirectory = tmp.dirSync({});
     dirName = dbDirectory.name;
   }
+  return dirName;
+}
 
-  let configExists = false
+function createConfigFile(adminPort, dirName, proxyUrl) {
+  let configExists = false;
   const configFileName = `${dirName}/config.yaml`;
 
   if (fs.existsSync(configFileName)) {
     try {
-      const doc = yaml.safeLoad(fs.readFileSync(configFileName, 'utf8'));
+      const doc = yaml.safeLoad(fs.readFileSync(configFileName, "utf8"));
       adminPort = doc.admin_interfaces[0].driver.port;
       console.log(`Using admin port ${adminPort} from config`);
     } catch (e) {
       console.log(e);
     }
-    return [configFileName, false, adminPort]
+    return [configFileName, false, adminPort];
   }
-  const networkConfig = proxyUrl ?
-`network:
+  const networkConfig = proxyUrl
+    ? `network:
     bootstrap_service: https://bootstrap.holo.host
     transport_pool:
       - type: proxy
@@ -33,8 +36,8 @@ function createConfigFile(adminPort, dirName, proxyUrl) {
         proxy_config:
           type: remote_proxy_client
           proxy_url: "${proxyUrl}"
-` :
-`network:
+`
+    : `network:
     bootstrap_service: https://bootstrap.holo.host
     transport_pool:
        - type: quic
@@ -62,20 +65,25 @@ ${networkConfig}
 }
 //     "kitsune-proxy://CIW6PxKxsPPlcuvUCbMcKwUpaMSmB7kLD8xyyj4mqcw/kitsune-quic/h/proxy.holochain.org/p/5778/--",
 export async function execHolochain(adminPort, runPath, proxyUrl) {
+  const dirName = createTmpDirIfNecessary(runPath);
   const [configFilePath, configCreated, realAdminPort] = createConfigFile(
     adminPort,
-    runPath,
-    proxyUrl,
+    dirName,
+    proxyUrl
   );
 
   child_process.spawn("lair-keystore", [], {
     stdio: "inherit",
-    env: process.env,
+    env: { ...process.env, LAIR_DIR: `${dirName}/keystore` },
+  });
+  process.on("SIGINT", function () {
+    fs.unlinkSync(`${dirName}/keystore/pid`)
+    process.exit();
   });
 
   await sleep(500);
-  
-  console.log("Using config file:", configFilePath)
+
+  console.log("Using config file:", configFilePath);
   child_process.spawn("holochain", ["-c", configFilePath], {
     stdio: "inherit",
     env: {

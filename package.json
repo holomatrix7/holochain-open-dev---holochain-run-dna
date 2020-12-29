@@ -1,11 +1,11 @@
 {
   "name": "@holochain-open-dev/holochain-run-dna",
-  "version": "0.2.6",
+  "version": "0.2.10",
   "description": "CLI development tool to quickly run your holochain DNAs",
   "main": "./dist/main.js",
   "scripts": {
     "build": "rollup -c rollup.config.js",
-    "start-alice": "RUST_LOG=debug node dist/main.js test.dna.gz",
+    "start-alice": "RUST_LOG=debug node dist/main.js ~/projects/holochain/open-dev/calendar-events/zome/calendar_events.dna.gz",
     "start-bob": "RUST_LOG=debug node dist/main.js -p 8889 test.dna.gz"
   },
   "repository": {

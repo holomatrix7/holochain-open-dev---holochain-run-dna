@@ -2,18 +2,21 @@
 import { sleep } from "./utils.js";
 import { getAppToInstall } from "./args";
 import { execHolochain } from "./execHolochain.js";
-import { installApp, attachAppInterface } from "./installApp.js";
+import { installApp } from "./installApp.js";
 import getPort from "get-port";
 import fs from "fs";
 const yaml = require('js-yaml');
 
 async function execAndInstall(appToInstall) {
-
   // Find a free port for the admin websocket
   const adminPort = await getPort({ port: 1234 });
 
   // Execute holochain
-  const [configCreated, realAdminPort] = await execHolochain(adminPort, appToInstall.runPath,  appToInstall.proxyUrl);
+  const [configCreated, realAdminPort] = await execHolochain(
+    adminPort,
+    appToInstall.runPath,
+    appToInstall.proxyUrl
+  );
 
   // If the config file was created assume we also need to install everything
   if (configCreated) {
