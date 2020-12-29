@@ -45,6 +45,16 @@ Example: `holochain-run-dna -p 8889 ./test.dna.gz`
 
 The port is optional, the default is 8888.
 
+### Use of `-c` flag**
+Use the `-c` flag To install multiple happs and pass a path to a config.
+
+Example: `holochain-run-dna -c ./example-config.yml`
+
+To know how the config looks like please look at the [enample-config](./example-config.yml)
+> Note: Currently different happs will be installed with different agent by default.
+
+
+
 To change the debug level:
 
 ```bash
