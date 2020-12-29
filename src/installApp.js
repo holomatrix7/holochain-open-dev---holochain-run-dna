@@ -26,19 +26,3 @@ export async function installApp(adminPort, appPort, dnas, installedAppId) {
   await appWebsocket.client.close();
   await adminWebsocket.client.close();
 }
-
-export async function attachAppInterface(adminPort, appPort, installedAppId) {
-  console.log("\n Attaching... \n ");
-  const adminWebsocket = await AdminWebsocket.connect(
-    `ws://localhost:${adminPort}`
-  );
-  //  await adminWebsocket.activateApp({ installed_app_id: installedAppId });
-  await adminWebsocket.attachAppInterface({ port: appPort });
-
-  const appWebsocket = await AppWebsocket.connect(`ws://localhost:${appPort}`);
-
-  console.log(`Successfully attached to app interface on port ${appPort}`);
-
-  await appWebsocket.client.close();
-  await adminWebsocket.client.close();
-}
