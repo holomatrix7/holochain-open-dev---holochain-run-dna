@@ -29,9 +29,6 @@ async function execAndInstall(appToInstall) {
     } else {
       await installApp(realAdminPort, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
     }
-  } else {
-    await sleep(500);
-    await attachAppInterface(realAdminPort, appToInstall.appPort, appToInstall.installedAppId);
   }
 }
 
