@@ -7,7 +7,10 @@ import getPort from "get-port";
 
 async function execAndInstall(appToInstall) {
   // Find a free port for the admin websocket
-  const adminPort = await getPort({ port: 1234 });
+  let adminPort = appToInstall.adminPort;
+  if (!adminPort) {
+    adminPort = await getPort({ port: 1234 });
+  }
 
   // Execute holochain
   const [configCreated, realAdminPort] = await execHolochain(

@@ -20,30 +20,37 @@ function badInput() {
 }
 
 export function getAppToInstall() {
-  const yarg = yargs(hideBin(process.argv)).help()
-        .option("port", {
-          alias: "p",
-          type: "integer",
-          default: 8888,
-          description: "port",
-        })
-        .option("proxy-url", {
-          alias: "u",
-          type: "string",
-          description: "proxy URL for network configuration"
-        })
-        .option("run-path", {
-          alias: "r",
-          type: "string",
-          description: "path to existing configuration and data use storing data"
-        })
-        .option("installed-app-id", {
-          alias: "i",
-          type: "string",
-          default: "test-app",
-          description: "installed app id"
-        })
-        .argv;
+  const yarg = yargs(hideBin(process.argv))
+    .help()
+    .option("port", {
+      alias: "p",
+      type: "integer",
+      default: 8888,
+      description:
+        "port where the application interface of the conductor will be attached",
+    })
+    .option("admin-port", {
+      alias: "a",
+      type: "integer",
+      description:
+        "port where the admin interface of the conductor will be attached",
+    })
+    .option("proxy-url", {
+      alias: "u",
+      type: "string",
+      description: "proxy URL for network configuration",
+    })
+    .option("run-path", {
+      alias: "r",
+      type: "string",
+      description: "path to existing configuration and data use storing data",
+    })
+    .option("installed-app-id", {
+      alias: "i",
+      type: "string",
+      default: "test-app",
+      description: "installed app id",
+    }).argv;
 
   const paths = yarg._;
 
@@ -54,6 +61,7 @@ export function getAppToInstall() {
   return {
     installedAppId: yarg.installedAppId,
     appPort: yarg.port,
+    adminPort: yarg.adminPort,
     dnas,
     runPath: yarg.runPath,
     proxyUrl: yarg.proxyUrl,
