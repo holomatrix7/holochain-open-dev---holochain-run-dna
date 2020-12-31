@@ -49,11 +49,17 @@ export function getAppToInstall() {
           default: "test-app",
           description: "installed app id"
         })
+        .option("config", {
+          alias: "c",
+          type: "string",
+          description: "path to happ config file"
+        })
         .argv;
 
   const paths = yarg._;
-
-  if (paths.length === 0) badInput();
+  if (!yarg.config){
+    if (paths.length === 0) badInput();
+  }
 
   const dnas = paths.map((arg) => getDnaPath(arg));
 
@@ -64,5 +70,6 @@ export function getAppToInstall() {
     dnas,
     runPath: yarg.runPath,
     proxyUrl: yarg.proxyUrl,
+    happs: yarg.config,
   };
 }
