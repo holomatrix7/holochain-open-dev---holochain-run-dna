@@ -7,6 +7,7 @@ import { installApp, genPubKey } from "./installApp.js";
 import getPort from "get-port";
 import fs from "fs";
 const yaml = require('js-yaml');
+const chalk = require('chalk');
 
 async function execAndInstall(appToInstall) {
   // Find a free port for the admin websocket
@@ -32,12 +33,9 @@ async function execAndInstall(appToInstall) {
         throw new Error('Failed to connect to Admin Interface. Error: ', error);
       }
 
-      console.log('adminWebsocket : ', adminWebsocket);
-      console.log('appToInstall.multipleAgents : ', appToInstall.multipleAgents);
-
       let agentPubKey;
       if (!appToInstall.multipleAgents) {
-        console.log('(-m FLAG OFF) Generating single agent pub key for all apps.');
+        console.log(chalk.bold.blue('(-m FLAG OFF) Generating single agent pub key for all apps.'));
         try {
           agentPubKey = await genPubKey(adminWebsocket);
         } catch (error) {
@@ -53,7 +51,6 @@ async function execAndInstall(appToInstall) {
     } else {
       await installApp(adminWebsocket, agentPubKey, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
     }
-    // close socket after all app activity complete
     await adminWebsocket.client.close();
   }
 }

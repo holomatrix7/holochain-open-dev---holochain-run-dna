@@ -3,6 +3,7 @@ import child_process from "child_process";
 import fs from "fs";
 import { sleep } from "./utils.js";
 const yaml = require("js-yaml");
+const chalk = require('chalk');
 
 function createTmpDirIfNecessary(dirName) {
   if (!dirName) {
@@ -20,9 +21,9 @@ function createConfigFile(adminPort, dirName, proxyUrl) {
     try {
       const doc = yaml.safeLoad(fs.readFileSync(configFileName, "utf8"));
       adminPort = doc.admin_interfaces[0].driver.port;
-      console.log(`Using admin port ${adminPort} from config`);
+      console.log(chalk.bold.blue(`Using admin port ${adminPort} from config`));
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
     return [configFileName, false, adminPort];
   }
@@ -83,7 +84,7 @@ export async function execHolochain(adminPort, runPath, proxyUrl) {
 
   await sleep(500);
 
-  console.log("Using config file:", configFilePath);
+  console.log(chalk.bold.blue("Using config file at path: ", configFilePath));
   child_process.spawn("holochain", ["-c", configFilePath], {
     stdio: "inherit",
     env: {

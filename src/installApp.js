@@ -1,11 +1,12 @@
 import { AppWebsocket } from "@holochain/conductor-api";
+const chalk = require('chalk');
 
 export const genPubKey = async (adminWebsocket) => await adminWebsocket.generateAgentPubKey();
 
 export async function installApp(adminWebsocket, agentPubKey, appPort, dnas, installedAppId) {
   try {
     if (!agentPubKey) {
-      console.log(`(-m FLAG ON) Generating new agent pub key for ${installedAppId}.`);
+      console.log(chalk.bold.blue(`(-m FLAG ON) Generating new agent pub key for ${installedAppId}.`));
       try {
         agentPubKey = await genPubKey(adminWebsocket);
       } catch (error) {
@@ -26,10 +27,10 @@ export async function installApp(adminWebsocket, agentPubKey, appPort, dnas, ins
     await adminWebsocket.attachAppInterface({ port: appPort });
 
     const appWebsocket = await AppWebsocket.connect(`ws://localhost:${appPort}`);
-    console.log(`Successfully installed app on port ${appPort}`);
+    console.log(chalk.bold.blue(`Successfully installed app on port ${appPort}`));
     await appWebsocket.client.close();
   }
   catch (e) {
-    console.log("Error while installing happs: ", e);
+    console.error("Error while installing happs: ", e);
   }
 }

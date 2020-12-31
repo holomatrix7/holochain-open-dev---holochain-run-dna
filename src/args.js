@@ -15,7 +15,7 @@ function getDnaPath(provisionalPath) {
 function noIdleM() {
   throw new Error(`
   Bad input! Cannot use -m flag without providing a path to config.
-  USAGE: holochain-run-dna -c <path/to/config.yml> [-m]
+  USAGE : holochain-run-dna -c <path/to/config.yml> [-m]
 `);
 }
 
