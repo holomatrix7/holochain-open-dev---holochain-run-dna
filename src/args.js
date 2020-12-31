@@ -28,46 +28,48 @@ function badInput() {
 }
 
 export function getAppToInstall() {
-  const yarg = yargs(hideBin(process.argv)).help()
-        .option("port", {
-          alias: "p",
-          type: "integer",
-          default: 8888,
-          description: "port",
-        })
-        .option("admin-port", {
-          alias: "a",
-          type: "integer",
-          default: 1234,
-          description: "admin port"
-        })
-        .option("proxy-url", {
-          alias: "u",
-          type: "string",
-          description: "proxy URL for network configuration"
-        })
-        .option("run-path", {
-          alias: "r",
-          type: "string",
-          description: "path to existing configuration and data use storing data"
-        })
-        .option("installed-app-id", {
-          alias: "i",
-          type: "string",
-          default: "test-app",
-          description: "installed app id"
-        })
-        .option("config", {
-          alias: "c",
-          type: "string",
-          description: "path to happ config file"
-        })
-        .option("multiple-agents", {
-          alias: "m",
-          boolean: true,
-          description: "flag informing whether all apps in config should share an agent or each have their own."
-        })
-        .argv;
+  const yarg = yargs(hideBin(process.argv))
+    .help()
+    .option("port", {
+      alias: "p",
+      type: "integer",
+      default: 8888,
+      description:
+        "port where the application interface of the conductor will be attached",
+    })
+    .option("admin-port", {
+      alias: "a",
+      type: "integer",
+      default: 1234,
+      description:
+        "port where the admin interface of the conductor will be attached",
+    })
+    .option("proxy-url", {
+      alias: "u",
+      type: "string",
+      description: "proxy URL for network configuration",
+    })
+    .option("run-path", {
+      alias: "r",
+      type: "string",
+      description: "path to existing configuration and data use storing data",
+    })
+    .option("installed-app-id", {
+      alias: "i",
+      type: "string",
+      default: "test-app",
+      description: "installed app id",
+    })
+    .option("config", {
+      alias: "c",
+      type: "string",
+      description: "path to happ config file"
+    })
+    .option("multiple-agents", {
+      alias: "m",
+      boolean: true,
+      description: "flag informing whether all apps in config should share an agent or each have their own"
+    }).argv;
 
   const paths = yarg._;
   if (!yarg.config){
