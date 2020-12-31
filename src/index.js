@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { AdminWebsocket } from "@holochain/conductor-api";
 import { sleep } from "./utils.js";
 import { getAppToInstall } from "./args";
 import { execHolochain } from "./execHolochain.js";
-import { installApp } from "./installApp.js";
+import { installApp, genPubKey } from "./installApp.js";
 import getPort from "get-port";
 import fs from "fs";
 const yaml = require('js-yaml');
@@ -17,18 +18,43 @@ async function execAndInstall(appToInstall) {
     appToInstall.runPath,
     appToInstall.proxyUrl
   );
-
+  
   // If the config file was created assume we also need to install everything
   if (configCreated) {
-    await sleep(100);
-    if (appToInstall.happs) {
+      await sleep(100);
+    
+      let adminWebsocket;
+      try {
+        adminWebsocket = await AdminWebsocket.connect(
+          `ws://localhost:${realAdminPort}`
+        );        
+      } catch (error) {
+        throw new Error('Failed to connect to Admin Interface. Error: ', error);
+      }
+
+      console.log('adminWebsocket : ', adminWebsocket);
+      console.log('appToInstall.multipleAgents : ', appToInstall.multipleAgents);
+
+      let agentPubKey;
+      if (!appToInstall.multipleAgents) {
+        console.log('(-m FLAG OFF) Generating single agent pub key for all apps.');
+        try {
+          agentPubKey = await genPubKey(adminWebsocket);
+        } catch (error) {
+          throw new Error('Unable to generate agent key. Error : ', error);
+        }
+      }
+
+      if (appToInstall.happs) {
       const happs = yaml.safeLoad(fs.readFileSync(appToInstall.happs, 'utf8'));
       for(let happ of happs){
-        await installApp(realAdminPort, happ.app_port,  happ.dnas, happ.app_name);
+        await installApp(adminWebsocket, agentPubKey, happ.app_port,  happ.dnas, happ.app_name);
       }
     } else {
-      await installApp(realAdminPort, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
+      await installApp(adminWebsocket, agentPubKey, appToInstall.appPort,  appToInstall.dnas, appToInstall.installedAppId);
     }
+    // close socket after all app activity complete
+    await adminWebsocket.client.close();
   }
 }
 

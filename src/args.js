@@ -12,10 +12,18 @@ function getDnaPath(provisionalPath) {
   }
 }
 
+function noIdleM() {
+  throw new Error(`
+  Bad input! Cannot use -m flag without providing a path to config.
+  USAGE: holochain-run-dna -c <path/to/config.yml> [-m]
+`);
+}
+
 function badInput() {
   throw new Error(`
   Bad input!
-  USAGE: holochain-run-dna -p [PORT] [DNA_PATH, DNA_PATH...]
+  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m]
+  CLI  ARGUMENT USAGE : holochain-run-dna -p [PORT] -a [ADMIN PORT] -i [INSTALLED-APP-ID] -r [RUN PATH] -u [PROXY URL] [DNA_PATH, DNA_PATH...]
 `);
 }
 
@@ -54,11 +62,17 @@ export function getAppToInstall() {
           type: "string",
           description: "path to happ config file"
         })
+        .option("multiple-agents", {
+          alias: "m",
+          boolean: true,
+          description: "flag informing whether all apps in config should share an agent or each have their own."
+        })
         .argv;
 
   const paths = yarg._;
   if (!yarg.config){
-    if (paths.length === 0) badInput();
+    if (yarg.multipleAgents) noIdleM()
+    else if (paths.length === 0) badInput();
   }
 
   const dnas = paths.map((arg) => getDnaPath(arg));
@@ -71,5 +85,6 @@ export function getAppToInstall() {
     runPath: yarg.runPath,
     proxyUrl: yarg.proxyUrl,
     happs: yarg.config,
+    multipleAgents: yarg.multipleAgents,
   };
 }

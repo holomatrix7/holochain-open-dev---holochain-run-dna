@@ -91,6 +91,6 @@ export async function execHolochain(adminPort, runPath, proxyUrl) {
       RUST_LOG: process.env.RUST_LOG ? process.env.RUST_LOG : "info",
     },
   });
-  await sleep(3000); // 500
+  await sleep(3000);
   return [configCreated, realAdminPort];
 }

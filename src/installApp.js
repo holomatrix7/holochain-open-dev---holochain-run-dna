@@ -1,14 +1,20 @@
-import { AppWebsocket, AdminWebsocket } from "@holochain/conductor-api";
+import { AppWebsocket } from "@holochain/conductor-api";
 
-export async function installApp(adminPort, appPort, dnas, installedAppId) {
-  const adminWebsocket = await AdminWebsocket.connect(
-    `ws://localhost:${adminPort}`
-  );
+export const genPubKey = async (adminWebsocket) => await adminWebsocket.generateAgentPubKey();
+
+export async function installApp(adminWebsocket, agentPubKey, appPort, dnas, installedAppId) {
   try {
-    const pubKey = await adminWebsocket.generateAgentPubKey();
+    if (!agentPubKey) {
+      console.log(`(-m FLAG ON) Generating new agent pub key for ${installedAppId}.`);
+      try {
+        agentPubKey = await genPubKey(adminWebsocket);
+      } catch (error) {
+        throw new Error('Unable to generate agent key. Error : ', error);
+      }
+    }
 
     const app = await adminWebsocket.installApp({
-      agent_key: pubKey,
+      agent_key: agentPubKey,
       installed_app_id: installedAppId,
       dnas: dnas.map((dna) => {
         const path = dna.split("/");
@@ -26,5 +32,4 @@ export async function installApp(adminPort, appPort, dnas, installedAppId) {
   catch (e) {
     console.log("Error while installing happs: ", e);
   }
-  await adminWebsocket.client.close();
 }
