@@ -24,9 +24,10 @@
   "dependencies": {
     "@holochain/conductor-api": "0.0.1-dev.14",
     "babel": "^6.23.0",
+    "chalk": "^4.1.0",
+    "js-yaml": "^3.14.0",
     "tmp": "^0.2.1",
-    "yargs": "^16.1.1",
-    "js-yaml": "^3.14.0"
+    "yargs": "^16.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

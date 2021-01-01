@@ -1,28 +1,36 @@
-import { AppWebsocket, AdminWebsocket } from "@holochain/conductor-api";
+import { AppWebsocket } from "@holochain/conductor-api";
+const chalk = require('chalk');
 
-export async function installApp(adminPort, appPort, dnas, installedAppId) {
-  const adminWebsocket = await AdminWebsocket.connect(
-    `ws://localhost:${adminPort}`
-  );
+export const genPubKey = async (adminWebsocket) => await adminWebsocket.generateAgentPubKey();
 
-  const pubKey = await adminWebsocket.generateAgentPubKey();
+export async function installApp(adminWebsocket, agentPubKey, appPort, dnas, installedAppId) {
+  try {
+    if (!agentPubKey) {
+      console.log(chalk.bold.blue(`(-m FLAG ON) Generating new agent pub key for ${installedAppId}.`));
+      try {
+        agentPubKey = await genPubKey(adminWebsocket);
+      } catch (error) {
+        throw new Error('Unable to generate agent key. Error : ', error);
+      }
+    }
 
-  const app = await adminWebsocket.installApp({
-    agent_key: pubKey,
-    installed_app_id: installedAppId,
-    dnas: dnas.map((dna) => {
-      const path = dna.split("/");
-      return { nick: path[path.length - 1], path: dna };
-    }),
-  });
+    const app = await adminWebsocket.installApp({
+      agent_key: agentPubKey,
+      installed_app_id: installedAppId,
+      dnas: dnas.map((dna) => {
+        const path = dna.split("/");
+        return { nick: path[path.length - 1], path: dna };
+      }),
+    });
 
-  await adminWebsocket.activateApp({ installed_app_id: installedAppId });
-  await adminWebsocket.attachAppInterface({ port: appPort });
+    await adminWebsocket.activateApp({ installed_app_id: installedAppId });
+    await adminWebsocket.attachAppInterface({ port: appPort });
 
-  const appWebsocket = await AppWebsocket.connect(`ws://localhost:${appPort}`);
-
-  console.log(`Successfully installed app on port ${appPort}`);
-
-  await appWebsocket.client.close();
-  await adminWebsocket.client.close();
+    const appWebsocket = await AppWebsocket.connect(`ws://localhost:${appPort}`);
+    console.log(chalk.bold.blue(`Successfully installed app on port ${appPort}`));
+    await appWebsocket.client.close();
+  }
+  catch (e) {
+    console.error("Error while installing happs: ", e);
+  }
 }
