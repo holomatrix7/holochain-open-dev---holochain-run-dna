@@ -40,7 +40,6 @@ export function getAppToInstall() {
     .option("admin-port", {
       alias: "a",
       type: "integer",
-      default: 1234,
       description:
         "port where the admin interface of the conductor will be attached",
     })

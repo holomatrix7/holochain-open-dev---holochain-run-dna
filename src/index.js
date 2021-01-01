@@ -10,8 +10,13 @@ const yaml = require('js-yaml');
 const chalk = require('chalk');
 
 async function execAndInstall(appToInstall) {
-  // Find a free port for the admin websocket
-  const adminPort = await getPort({ port: appToInstall.adminPort });
+  // If the admin port was set by the user, we shouldn't change it
+  let adminPort = appToInstall.adminPort;
+  if (!adminPort) {
+    // Find a free port for the admin websocket,
+    // but only if the admin port was not set by the user
+    adminPort = await getPort({ port: appToInstall.adminPort });
+  }
 
   // Execute holochain
   const [configCreated, realAdminPort] = await execHolochain(
