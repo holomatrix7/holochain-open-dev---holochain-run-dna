@@ -12,24 +12,17 @@ function getDnaPath(provisionalPath) {
   }
 }
 
-function noAdminPort() {
+function badConfigInput(msg) {
   throw new Error(`
-  Bad input! Cannot use -hc flag without providing an Admin Port.
-  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] -a [ADMIN PORT]
+  Bad input! ${msg}
+  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] [-h] -a [ADMIN PORT]
 `);
 }
 
-function noIdleM() {
+function inputGuide(help = true) {
   throw new Error(`
-  Bad input! Cannot use -m flag without providing a path to config.
-  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] -a [ADMIN PORT]
-`);
-}
-
-function badInput() {
-  throw new Error(`
-  Bad input!
-  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] -a [ADMIN PORT]
+  ${help ? '--help\n' : 'Bad input!'}
+  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] [-h] -a [ADMIN PORT]
   CLI  ARGUMENT USAGE : holochain-run-dna -p [PORT] -a [ADMIN PORT] -i [INSTALLED-APP-ID] -r [RUN PATH] -u [PROXY URL] [DNA_PATH, DNA_PATH...]
 `);
 }
@@ -77,17 +70,22 @@ export function getAppToInstall() {
       description: "flag informing whether all apps in config should share an agent or each have their own"
     })
     .option("ignore-holochain-conductor", {
-      alias: "hc",
-      boolean: false,
+      alias: "h",
+      boolean: true,
       description: "flag informing whether the holochain conductor should be run or not"
-    }).argv;
+    })
+    .help('info')
+    .argv;
 
   const paths = yarg._;
+
+  if (yarg.help) inputGuide(yarg.help);
+
   if (!yarg.config){
-    if (yarg.multipleAgents) noIdleM()
-    else if (paths.length === 0) badInput();
+    if (yarg.multipleAgents) badConfigInput('Cannot use -m flag without providing a path to config.');
+    else if (paths.length === 0) inputGuide();
   } else {
-    if (yarg.ignoreConductor && !yarg.adminPort) noAdminPort();
+    if (yarg.ignoreHolochainConductor && !yarg.adminPort) badConfigInput('Cannot use -h flag without providing an Admin Port.');
   }
 
   const dnas = paths.map((arg) => getDnaPath(arg));
@@ -101,6 +99,6 @@ export function getAppToInstall() {
     proxyUrl: yarg.proxyUrl,
     happs: yarg.config,
     multipleAgents: yarg.multipleAgents,
-    ignoreConductor: yarg.ignoreHolochainConductor,
+    ignoreHolochainConductor: yarg.ignoreHolochainConductor,
   };
 }

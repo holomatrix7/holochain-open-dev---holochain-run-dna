@@ -19,7 +19,7 @@ async function execAndInstall(appToInstall) {
   }
 
   let configCreated, realAdminPort
-  if (!appToInstall.ignoreConductor) {
+  if (!appToInstall.ignoreHolochainConductor) {
     // Execute holochain
     ([configCreated, realAdminPort] = await execHolochain(
       adminPort,
@@ -29,9 +29,9 @@ async function execAndInstall(appToInstall) {
   } else {
     realAdminPort = adminPort
   }
-  
+
   // If the config file was created assume we also need to install everything
-  if (configCreated || appToInstall.ignoreConductor) {
+  if (configCreated || appToInstall.ignoreHolochainConductor) {
       await sleep(100);
     
       let adminWebsocket;
