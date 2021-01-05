@@ -17,8 +17,8 @@ function inputGuide(msg, help = false) {
   const logMsg = msg || '';
   throw new Error(`
   ${help ? chalk.bold.yellow('Usage Guide:') : chalk.bold.red('Bad input! ' + logMsg)}
-  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] -s [OPEN ADMIN PORT]
-  CLI  ARGUMENT USAGE : holochain-run-dna -p [PORT] -a [ADMIN PORT] -i [INSTALLED-APP-ID] -r [RUN PATH] -u [PROXY URL] -s [OPEN ADMIN PORT] [DNA_PATH, DNA_PATH...]
+  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] -u [OPEN ADMIN PORT]
+  CLI  ARGUMENT USAGE : holochain-run-dna -p [PORT] -a [ADMIN PORT] -i [INSTALLED-APP-ID] -r [RUN PATH] -u [PROXY URL] -u [OPEN ADMIN PORT] [DNA_PATH, DNA_PATH...]
 `);
 }
 
@@ -64,8 +64,8 @@ export function getAppToInstall() {
       boolean: true,
       description: "flag informing whether all apps in config should share an agent or each have their own"
     })
-    .option("skip-conductor-setup", {
-      alias: "s",
+    .option("use-alternative-conductor-port", {
+      alias: "u",
       type: "integer",
       description: "open port where the admin interface is running (this will automatically skip internal holochain setup and connect to running conductor instead).",
     })
@@ -76,7 +76,7 @@ export function getAppToInstall() {
 
   if (yarg.help) inputGuide(null, yarg.help);
 
-  if (yarg.skipConductorSetup && (typeof yarg.skipConductorSetup !== 'number')) inputGuide('Cannot use -s flag without providing a port number of type integer.');
+  if (yarg.useAlternativeConductorPort && (typeof yarg.useAlternativeConductorPort !== 'number')) inputGuide('Cannot use -s flag without providing a port number of type integer.');
 
   if (!yarg.config){
     if (yarg.multipleAgents) inputGuide('Cannot use -m flag without providing a path to config.');
@@ -94,6 +94,6 @@ export function getAppToInstall() {
     proxyUrl: yarg.proxyUrl,
     happs: yarg.config,
     multipleAgents: yarg.multipleAgents,
-    skipConductorSetup: yarg.skipConductorSetup,
+    useAltConductorPort: yarg.useAlternativeConductorPort,
   };
 }

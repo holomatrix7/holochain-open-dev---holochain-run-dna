@@ -19,7 +19,7 @@ async function execAndInstall(appToInstall) {
   }
 
   let configCreated, realAdminPort
-  if (!appToInstall.skipConductorSetup) {
+  if (!appToInstall.useAltConductorPort) {
     // Execute holochain
     ([configCreated, realAdminPort] = await execHolochain(
       adminPort,
@@ -27,12 +27,12 @@ async function execAndInstall(appToInstall) {
       appToInstall.proxyUrl
       ));
     } else {
-      realAdminPort = appToInstall.skipConductorSetup
+      realAdminPort = appToInstall.useAltConductorPort
       console.log(chalk.bold.blue(`Skipping internal Holochain Conductor setup and instead connecting to admin port of running Conductor at ${realAdminPort}.`))
   }
 
   // If the config file was created assume we also need to install everything
-  if (configCreated || appToInstall.skipConductorSetup) {
+  if (configCreated || appToInstall.useAltConductorPort) {
       await sleep(100);
     
       let adminWebsocket;
