@@ -1,6 +1,7 @@
 import fs from "fs";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+const chalk = require('chalk');
 
 function getDnaPath(provisionalPath) {
   if (fs.existsSync(provisionalPath)) {
@@ -12,18 +13,12 @@ function getDnaPath(provisionalPath) {
   }
 }
 
-function noIdleM() {
+function inputGuide(msg, help = false) {
+  const logMsg = msg || '';
   throw new Error(`
-  Bad input! Cannot use -m flag without providing a path to config.
-  USAGE : holochain-run-dna -c <path/to/config.yml> [-m]
-`);
-}
-
-function badInput() {
-  throw new Error(`
-  Bad input!
-  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m]
-  CLI  ARGUMENT USAGE : holochain-run-dna -p [PORT] -a [ADMIN PORT] -i [INSTALLED-APP-ID] -r [RUN PATH] -u [PROXY URL] [DNA_PATH, DNA_PATH...]
+  ${help ? chalk.bold.yellow('Usage Guide:') : chalk.bold.red('Bad input! ' + logMsg)}
+  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] -x [OPEN ADMIN PORT]
+  CLI  ARGUMENT USAGE : holochain-run-dna -p [PORT] -a [ADMIN PORT] -i [INSTALLED-APP-ID] -r [RUN PATH] -u [PROXY URL] -x [OPEN ADMIN PORT] [DNA_PATH, DNA_PATH...]
 `);
 }
 
@@ -68,12 +63,24 @@ export function getAppToInstall() {
       alias: "m",
       boolean: true,
       description: "flag informing whether all apps in config should share an agent or each have their own"
-    }).argv;
+    })
+    .option("use-alternative-conductor-port", {
+      alias: "x",
+      type: "integer",
+      description: "open port where the admin interface is running (this will automatically skip internal holochain setup and connect to running conductor instead).",
+    })
+    .help('info')
+    .argv;
 
   const paths = yarg._;
+
+  if (yarg.help) inputGuide(null, yarg.help);
+
+  if (yarg.useAlternativeConductorPort && (typeof yarg.useAlternativeConductorPort !== 'number')) inputGuide('Cannot use -x flag without providing a port number of type integer.');
+
   if (!yarg.config){
-    if (yarg.multipleAgents) noIdleM()
-    else if (paths.length === 0) badInput();
+    if (yarg.multipleAgents) inputGuide('Cannot use -m flag without providing a path to config.');
+    else if (paths.length === 0) inputGuide();
   }
 
   const dnas = paths.map((arg) => getDnaPath(arg));
@@ -87,5 +94,6 @@ export function getAppToInstall() {
     proxyUrl: yarg.proxyUrl,
     happs: yarg.config,
     multipleAgents: yarg.multipleAgents,
+    useAltConductorPort: yarg.useAlternativeConductorPort,
   };
 }
