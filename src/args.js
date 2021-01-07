@@ -76,7 +76,7 @@ export function getAppToInstall() {
 
   if (yarg.help) inputGuide(null, yarg.help);
 
-  if (yarg.useAlternativeConductorPort && (typeof yarg.useAlternativeConductorPort !== 'number')) inputGuide('Cannot use -s flag without providing a port number of type integer.');
+  if (yarg.useAlternativeConductorPort && (typeof yarg.useAlternativeConductorPort !== 'number')) inputGuide('Cannot use -x flag without providing a port number of type integer.');
 
   if (!yarg.config){
     if (yarg.multipleAgents) inputGuide('Cannot use -m flag without providing a path to config.');
