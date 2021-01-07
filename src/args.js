@@ -17,8 +17,8 @@ function inputGuide(msg, help = false) {
   const logMsg = msg || '';
   throw new Error(`
   ${help ? chalk.bold.yellow('Usage Guide:') : chalk.bold.red('Bad input! ' + logMsg)}
-  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] -u [OPEN ADMIN PORT]
-  CLI  ARGUMENT USAGE : holochain-run-dna -p [PORT] -a [ADMIN PORT] -i [INSTALLED-APP-ID] -r [RUN PATH] -u [PROXY URL] -u [OPEN ADMIN PORT] [DNA_PATH, DNA_PATH...]
+  CONFIG  FILE  USAGE : holochain-run-dna -c <path/to/config.yml> [-m] -x [OPEN ADMIN PORT]
+  CLI  ARGUMENT USAGE : holochain-run-dna -p [PORT] -a [ADMIN PORT] -i [INSTALLED-APP-ID] -r [RUN PATH] -u [PROXY URL] -x [OPEN ADMIN PORT] [DNA_PATH, DNA_PATH...]
 `);
 }
 
@@ -65,7 +65,7 @@ export function getAppToInstall() {
       description: "flag informing whether all apps in config should share an agent or each have their own"
     })
     .option("use-alternative-conductor-port", {
-      alias: "u",
+      alias: "x",
       type: "integer",
       description: "open port where the admin interface is running (this will automatically skip internal holochain setup and connect to running conductor instead).",
     })
