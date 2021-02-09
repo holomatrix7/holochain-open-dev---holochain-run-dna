@@ -13,7 +13,7 @@ function createTmpDirIfNecessary(dirName) {
   return dirName;
 }
 
-function createConfigFile(adminPort, dirName, proxyUrl) {
+function createConfigFile(adminPort, dirName, proxyUrl, keystorePath) {
   let configExists = false;
   const configFileName = `${dirName}/config.yaml`;
 
@@ -43,6 +43,7 @@ function createConfigFile(adminPort, dirName, proxyUrl) {
     transport_pool:
        - type: quic
 `;
+  let keystore_path = keystorePath === undefined ? `keystore` : keystorePath
   const configFileContents = `
 ---
 environment_path: ${dirName}
@@ -51,7 +52,7 @@ signing_service_uri: ~
 encryption_service_uri: ~
 decryption_service_uri: ~
 dpki: ~
-keystore_path: "${dirName}/keystore"
+keystore_path: "${dirName}/${keystore_path}"
 passphrase_service: ~
 admin_interfaces:
     - driver:
@@ -65,24 +66,26 @@ ${networkConfig}
   return [configFileName, true, adminPort];
 }
 //     "kitsune-proxy://CIW6PxKxsPPlcuvUCbMcKwUpaMSmB7kLD8xyyj4mqcw/kitsune-quic/h/proxy.holochain.org/p/5778/--",
-export async function execHolochain(adminPort, runPath, proxyUrl) {
+export async function execHolochain(adminPort, runPath, proxyUrl, keystorePath) {
   const dirName = createTmpDirIfNecessary(runPath);
   const [configFilePath, configCreated, realAdminPort] = createConfigFile(
     adminPort,
     dirName,
-    proxyUrl
+    proxyUrl,
+    keystorePath
   );
 
-  child_process.spawn("lair-keystore", [], {
-    stdio: "inherit",
-    env: { ...process.env, LAIR_DIR: `${dirName}/keystore` },
-  });
-  process.on("SIGINT", function () {
-    fs.unlinkSync(`${dirName}/keystore/pid`)
-    process.exit();
-  });
-
-  await sleep(500);
+  if (!keystorePath) {
+    child_process.spawn("lair-keystore", [], {
+      stdio: "inherit",
+      env: { ...process.env, LAIR_DIR: `${dirName}/keystore` },
+    });
+    process.on("SIGINT", function () {
+      fs.unlinkSync(`${dirName}/keystore/pid`)
+      process.exit();
+    });
+    await sleep(500);
+  }
 
   console.log(chalk.bold.blue("Using config file at path: ", configFilePath));
   child_process.spawn("holochain", ["-c", configFilePath], {

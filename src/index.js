@@ -24,7 +24,8 @@ async function execAndInstall(appToInstall) {
     ([configCreated, realAdminPort] = await execHolochain(
       adminPort,
       appToInstall.runPath,
-      appToInstall.proxyUrl
+      appToInstall.proxyUrl,
+      appToInstall.keystorePath,
       ));
     } else {
       realAdminPort = appToInstall.useAltConductorPort
@@ -34,12 +35,12 @@ async function execAndInstall(appToInstall) {
   // If the config file was created assume we also need to install everything
   if (configCreated || appToInstall.useAltConductorPort) {
       await sleep(100);
-    
+
       let adminWebsocket;
       try {
         adminWebsocket = await AdminWebsocket.connect(
           `ws://localhost:${realAdminPort}`
-        );        
+        );
       } catch (error) {
         throw new Error('Failed to connect to Admin Interface. Error: ', error);
       }
