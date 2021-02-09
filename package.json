@@ -5,7 +5,7 @@
   "main": "./dist/main.js",
   "scripts": {
     "build": "rollup -c rollup.config.js",
-    "start-alice": "RUST_LOG=debug node dist/main.js ~/projects/holochain/open-dev/calendar-events/zome/calendar_events.dna.gz",
+    "start-alice": "RUST_LOG=debug node dist/main.js test.dna.gz",
     "start-bob": "RUST_LOG=debug node dist/main.js -p 8889 test.dna.gz"
   },
   "repository": {
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/holochain-open-dev/holochain-run-dna#readme",
   "dependencies": {
-    "@holochain/conductor-api": "0.0.1-dev.14",
+    "@holochain/conductor-api": "0.0.1-dev.16",
     "babel": "^6.23.0",
     "chalk": "^4.1.0",
     "js-yaml": "^3.14.0",
