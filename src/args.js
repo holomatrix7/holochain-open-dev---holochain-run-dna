@@ -69,6 +69,11 @@ export function getAppToInstall() {
       type: "integer",
       description: "open port where the admin interface is running (this will automatically skip internal holochain setup and connect to running conductor instead).",
     })
+    .option("keystore-path", {
+      alias: "k",
+      type: "string",
+      description: "path to lair keystore that is running",
+    })
     .help('info')
     .argv;
 
@@ -91,6 +96,7 @@ export function getAppToInstall() {
     adminPort: yarg.adminPort,
     dnas,
     runPath: yarg.runPath,
+    keystorePath: yarg.keystorePath,
     proxyUrl: yarg.proxyUrl,
     happs: yarg.config,
     multipleAgents: yarg.multipleAgents,
