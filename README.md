@@ -1,3 +1,9 @@
+#[DEPRECATED]
+
+Use `hc` instead: https://github.com/holochain/holochain-dna-build-tutorial
+
+---
+
 # holochain-run-dna
 
 A small and temporary cli tool to execute holochain and install the given DNAs. This emulates the behaviour that `hc run` had.
